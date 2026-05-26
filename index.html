@@ -13,7 +13,7 @@
 
         html, body {
             width: 100%;
-            min-height: 100%;
+            height: 100%;
             overflow-x: hidden;
             font-family: 'Times New Roman', serif;
             background: #0a1628;
@@ -25,12 +25,16 @@
             align-items: center;
             background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 50%, #0f1f3a 100%);
             position: relative;
+            min-height: 100vh;
         }
 
         /* STARS */
         .stars {
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-image:
                 radial-gradient(white 1px, transparent 1px),
                 radial-gradient(white 1px, transparent 1px);
@@ -38,7 +42,7 @@
             background-position: 0 0, 40px 60px;
             opacity: 0.4;
             animation: twinkle 6s infinite alternate;
-            z-index: 1;
+            z-index: 0;
             pointer-events: none;
         }
 
@@ -50,14 +54,17 @@
         /* CANVAS FIREWORKS */
         canvas {
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
-            z-index: 2;
+            z-index: 3;
         }
 
         /* HOME SCREEN */
         .home {
-            position: absolute;
+            position: relative;
             z-index: 5;
             display: flex;
             flex-direction: column;
@@ -66,6 +73,11 @@
             transition: opacity 1s ease;
             min-height: 100vh;
             width: 100%;
+        }
+
+        .home.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
 
         /* ENVELOPE */
@@ -78,6 +90,7 @@
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
             perspective: 1000px;
+            z-index: 10;
         }
 
         /* ENVELOPE BACK */
@@ -89,6 +102,7 @@
             overflow: hidden;
             box-shadow: 0 0 50px rgba(255, 255, 255, 0.12);
             border: 2px solid rgba(173, 216, 230, 0.3);
+            z-index: 2;
         }
 
         .env-back::before {
@@ -130,6 +144,7 @@
             opacity: 0;
             transition: opacity 1s ease;
             z-index: 1;
+            pointer-events: none;
         }
 
         /* SEAL */
@@ -145,12 +160,6 @@
             border: 4px solid rgba(173, 216, 230, 0.6);
             box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
             z-index: 8;
-        }
-
-        .seal::after {
-            content: '💙';
-            position: absolute;
-            inset: 0;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -165,6 +174,8 @@
             color: white;
             text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
             animation: pulse 2s infinite;
+            z-index: 10;
+            position: relative;
         }
 
         @keyframes pulse {
@@ -175,12 +186,15 @@
         /* INVITE SCREEN */
         .invite-screen {
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: none;
             justify-content: center;
             align-items: center;
             padding: 15px;
-            z-index: 10;
+            z-index: 20;
             background: rgba(0, 0, 0, 0.45);
             backdrop-filter: blur(8px);
             overflow-y: auto;
@@ -196,6 +210,7 @@
             width: 100%;
             max-width: 480px;
             animation: showInvite 1.2s ease;
+            z-index: 25;
         }
 
         @keyframes showInvite {
@@ -211,7 +226,7 @@
 
         /* INVITE CARD */
         .invite-card {
-            background: linear-gradient(135deg, rgba(15, 35, 70, 0.95) 0%, rgba(25, 50, 100, 0.95) 100%);
+            background: linear-gradient(135deg, rgba(15, 35, 70, 0.98) 0%, rgba(25, 50, 100, 0.98) 100%);
             border-radius: 28px;
             padding: 40px 30px;
             box-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
@@ -240,6 +255,8 @@
             letter-spacing: 2px;
             margin-bottom: 10px;
             text-shadow: 0 0 15px rgba(173, 216, 230, 0.4);
+            position: relative;
+            z-index: 2;
         }
 
         .invite-card .number {
@@ -248,6 +265,8 @@
             color: rgba(255, 255, 255, 0.9);
             margin-bottom: 5px;
             text-shadow: 0 0 20px rgba(173, 216, 230, 0.5);
+            position: relative;
+            z-index: 2;
         }
 
         .invite-card .subtitle {
@@ -257,6 +276,8 @@
             letter-spacing: 3px;
             margin-bottom: 25px;
             text-shadow: 0 0 10px rgba(173, 216, 230, 0.3);
+            position: relative;
+            z-index: 2;
         }
 
         /* DECORATIVE LINE */
@@ -265,6 +286,8 @@
             height: 1px;
             background: rgba(173, 216, 230, 0.5);
             margin: 20px auto;
+            position: relative;
+            z-index: 2;
         }
 
         /* MESSAGE */
@@ -275,6 +298,8 @@
             line-height: 1.8;
             margin: 25px 0;
             font-style: italic;
+            position: relative;
+            z-index: 2;
         }
 
         /* DETAILS */
@@ -283,6 +308,8 @@
             display: flex;
             flex-direction: column;
             gap: 18px;
+            position: relative;
+            z-index: 2;
         }
 
         .detail-item {
@@ -317,6 +344,8 @@
             border-radius: 15px;
             border: 1px solid rgba(173, 216, 230, 0.2);
             text-align: center;
+            position: relative;
+            z-index: 2;
         }
 
         .qr-section h3 {
@@ -344,6 +373,8 @@
             border-radius: 15px;
             border: 1px solid rgba(173, 216, 230, 0.2);
             text-align: center;
+            position: relative;
+            z-index: 2;
         }
 
         .dress-code h3 {
@@ -379,6 +410,8 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+            position: relative;
+            z-index: 2;
         }
 
         .rsvp-btn:hover {
@@ -398,12 +431,16 @@
             color: rgba(255, 255, 255, 0.6);
             margin-top: 20px;
             line-height: 1.5;
+            position: relative;
+            z-index: 2;
         }
 
         .heart-divider {
             font-size: 16px;
             color: rgba(255, 255, 255, 0.4);
             margin: 15px 0;
+            position: relative;
+            z-index: 2;
         }
 
         /* MOBILE */
@@ -459,7 +496,7 @@
             <div class="env-back"></div>
             <div class="light" id="light"></div>
             <div class="flap" id="flap"></div>
-            <div class="seal"></div>
+            <div class="seal">💙</div>
         </div>
         <div class="tap">✨ Tocca la busta ✨</div>
     </div>
@@ -617,7 +654,7 @@
             document.getElementById('light').style.opacity = '1';
 
             setTimeout(function() {
-                document.getElementById('home').style.opacity = '0';
+                document.getElementById('home').classList.add('hidden');
 
                 setTimeout(function() {
                     document.getElementById('home').style.display = 'none';
