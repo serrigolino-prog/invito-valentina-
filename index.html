@@ -23,23 +23,32 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #0a1628 0%, #1a3a5a 50%, #0f1f3a 100%);
+            background: radial-gradient(ellipse at center, #1a3a5a 0%, #0a1628 100%);
             position: relative;
             min-height: 100vh;
         }
 
-        /* STARS BACKGROUND */
-        .stars {
+        /* BACKGROUND EFFECTS */
+        .bg-effects {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 0;
+            pointer-events: none;
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
         }
 
         .star {
             position: absolute;
+            width: 2px;
+            height: 2px;
             background: white;
             border-radius: 50%;
             animation: twinkle 3s infinite;
@@ -50,7 +59,29 @@
             50% { opacity: 1; }
         }
 
-        /* CANVAS FIREWORKS */
+        /* GLITTER PARTICLES */
+        .glitter-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitter {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: radial-gradient(circle, #add8e6, #87ceeb);
+            border-radius: 50%;
+            box-shadow: 0 0 10px #add8e6;
+            animation: sparkle 2s infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: translate(0, 0) scale(1); }
+            50% { opacity: 1; transform: translate(var(--tx), var(--ty)) scale(1.5); }
+        }
+
+        /* CANVAS */
         canvas {
             position: fixed;
             top: 0;
@@ -58,44 +89,21 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 10;
-        }
-
-        /* SCREEN CONTAINER */
-        .screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-            justify-content: center;
-            align-items: center;
             z-index: 5;
-            opacity: 1;
-            transition: opacity 0.8s ease;
-        }
-
-        .screen.active {
-            display: flex;
-        }
-
-        .screen.fade-out {
-            opacity: 0;
-            pointer-events: none;
         }
 
         /* PHONE FRAME */
         .phone {
             width: 100%;
-            max-width: 340px;
-            aspect-ratio: 9/20;
-            border-radius: 40px;
-            border: 12px solid #1a1a1a;
+            max-width: 360px;
+            aspect-ratio: 9/19.5;
+            border-radius: 45px;
+            border: 14px solid #1a1a1a;
             overflow: hidden;
-            box-shadow: 0 0 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(173, 216, 230, 0.2);
+            box-shadow: 0 0 80px rgba(0, 0, 0, 0.9), 0 0 50px rgba(173, 216, 230, 0.15);
             background: #0a1628;
             position: relative;
+            z-index: 10;
         }
 
         .phone::before {
@@ -104,81 +112,90 @@
             top: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 150px;
-            height: 28px;
+            width: 160px;
+            height: 30px;
             background: #000;
-            border-radius: 0 0 30px 30px;
-            z-index: 20;
+            border-radius: 0 0 35px 35px;
+            z-index: 30;
         }
 
-        .screen-content {
-            width: 100%;
-            height: 100%;
+        .phone::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: 15px;
+            width: 25px;
+            height: 15px;
+            background: linear-gradient(to bottom, #333, #000);
+            border-radius: 3px;
+            z-index: 31;
+        }
+
+        .screen {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 360px;
+            aspect-ratio: 9/19.5;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+            transition: opacity 0.8s ease;
+            z-index: 15;
+        }
+
+        .screen.active {
             display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
         }
 
-        /* SCREEN 1: CLOSED ENVELOPE */
-        .screen1-content {
-            background: linear-gradient(135deg, #0a1628 0%, #1a3a5a 50%, #0f1f3a 100%);
+        .screen-inner {
             width: 100%;
             height: 100%;
+            background: linear-gradient(135deg, #0a1628 0%, #1a3a5a 50%, #0f1f3a 100%);
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            position: relative;
         }
 
-        .glitter-bg {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0.15;
+        /* ===== SCREEN 1: CLOSED ENVELOPE ===== */
+        .screen1 .screen-inner {
+            padding: 40px 20px;
         }
 
-        .glitter {
-            position: absolute;
-            background: radial-gradient(circle, #add8e6, transparent);
-            border-radius: 50%;
-            animation: float 6s infinite ease-in-out;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
-            50% { opacity: 1; }
-        }
-
-        .envelope-closed {
-            width: 240px;
-            height: 160px;
+        .envelope-box {
+            width: 260px;
+            height: 180px;
             background: linear-gradient(135deg, #1a3a7a 0%, #0a1a3a 100%);
-            border-radius: 12px;
-            border: 2px solid rgba(173, 216, 230, 0.4);
+            border-radius: 15px;
+            border: 2px solid rgba(173, 216, 230, 0.5);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
             cursor: pointer;
-            margin-bottom: 30px;
-            box-shadow: 0 0 50px rgba(255, 255, 255, 0.15);
-            transition: transform 0.3s ease;
-            z-index: 5;
+            margin-bottom: 20px;
+            box-shadow: 0 0 60px rgba(173, 216, 230, 0.2);
+            transition: all 0.3s ease;
+            overflow: hidden;
         }
 
-        .envelope-closed:active {
-            transform: scale(0.98);
+        .envelope-box:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 80px rgba(173, 216, 230, 0.3);
         }
 
-        .envelope-closed::before {
+        .envelope-box::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at 30% 30%, rgba(173, 216, 230, 0.2), transparent 50%);
-            border-radius: 12px;
+            background: radial-gradient(circle at 30% 30%, rgba(100, 150, 255, 0.2), transparent 50%);
             pointer-events: none;
         }
 
@@ -187,139 +204,142 @@
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            position: relative;
             z-index: 2;
         }
 
-        .envelope-title {
-            font-size: 28px;
+        .env-name {
+            font-size: 32px;
             color: #e6f3ff;
             font-weight: normal;
             letter-spacing: 3px;
-            text-shadow: 0 0 15px rgba(173, 216, 230, 0.5);
+            text-shadow: 0 0 15px rgba(173, 216, 230, 0.6);
+            font-style: italic;
         }
 
-        .envelope-number {
-            font-size: 48px;
+        .env-number {
+            font-size: 56px;
             color: #c9e3ff;
-            font-weight: normal;
-            text-shadow: 0 0 20px rgba(173, 216, 230, 0.6);
-            line-height: 0.8;
+            text-shadow: 0 0 20px rgba(173, 216, 230, 0.7);
+            line-height: 0.9;
+            font-weight: 300;
         }
 
-        .envelope-decoration-line {
-            font-size: 16px;
-            color: rgba(173, 216, 230, 0.6);
+        .env-decoration {
+            font-size: 18px;
+            color: rgba(173, 216, 230, 0.7);
             margin: 5px 0;
-            letter-spacing: 3px;
         }
 
-        .envelope-seal {
+        .seal-badge {
             position: absolute;
-            bottom: 8px;
-            width: 58px;
-            height: 58px;
+            bottom: 12px;
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #3a6fd1, #09142c);
-            border: 3px solid rgba(173, 216, 230, 0.7);
+            background: radial-gradient(circle at 30% 30%, #4a7fd1, #09142c);
+            border: 3px solid rgba(173, 216, 230, 0.8);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            box-shadow: 0 0 25px rgba(173, 216, 230, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.1);
-            z-index: 3;
+            font-size: 32px;
+            box-shadow: 0 0 30px rgba(173, 216, 230, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.1);
+            z-index: 4;
         }
 
-        .sei-invitato {
+        .text-sei {
             font-size: 11px;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.85);
             letter-spacing: 3px;
-            margin-top: 8px;
+            margin-top: 12px;
             text-transform: uppercase;
             font-weight: bold;
         }
 
-        .tap-instruction {
-            font-size: 16px;
-            color: white;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
-            animation: pulse 2s infinite;
-            position: absolute;
-            bottom: 30px;
-            z-index: 5;
+        .heart-bottom {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 8px;
         }
 
-        @keyframes pulse {
+        .tap-text {
+            font-size: 16px;
+            color: #e6f3ff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+            animation: pulse-tap 2s infinite;
+            margin-top: 15px;
+        }
+
+        @keyframes pulse-tap {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
 
-        /* SCREEN 2: OPENING ENVELOPE */
-        .screen2-content {
-            background: linear-gradient(135deg, #0a1628 0%, #1a3a5a 50%, #0f1f3a 100%);
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
+        /* ===== SCREEN 2: OPENING ENVELOPE ===== */
+        .screen2 .screen-inner {
+            padding: 60px 20px;
         }
 
         .envelope-opening {
             position: relative;
-            width: 280px;
-            height: 200px;
-            margin-bottom: 40px;
-            perspective: 1000px;
+            width: 300px;
+            height: 220px;
+            margin-bottom: 50px;
+            perspective: 1200px;
         }
 
-        .envelope-back {
+        .envelope-base {
             position: absolute;
             inset: 0;
             background: linear-gradient(135deg, #1a3a7a 0%, #0a1a3a 100%);
-            border-radius: 12px;
-            border: 2px solid rgba(173, 216, 230, 0.4);
+            border-radius: 15px;
+            border: 2px solid rgba(173, 216, 230, 0.5);
             z-index: 1;
         }
 
-        .envelope-flap {
+        .flap-open {
             position: absolute;
             inset: 0;
             clip-path: polygon(0 0, 100% 0, 50% 55%);
             background: linear-gradient(135deg, #2456bf 0%, #08162f 100%);
             transform-origin: top center;
-            animation: openFlap 1.5s ease-out forwards;
+            animation: flapOpen 1.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
             z-index: 2;
-            border-radius: 12px;
+            border-radius: 15px;
         }
 
-        @keyframes openFlap {
-            from { transform: rotateX(0deg); }
-            to { transform: rotateX(180deg); }
+        @keyframes flapOpen {
+            0% { transform: rotateX(0deg); }
+            100% { transform: rotateX(170deg); }
         }
 
-        .light-burst {
+        .light-explosion {
             position: absolute;
             left: 50%;
-            top: 35%;
+            top: 30%;
             transform: translate(-50%, -50%);
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255, 200, 50, 0.9), rgba(200, 150, 50, 0.3), transparent 70%);
-            filter: blur(20px);
-            animation: lightPulse 1.5s ease-out;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(255, 220, 100, 1) 0%, rgba(255, 180, 50, 0.6) 30%, rgba(200, 150, 50, 0.2), transparent 70%);
+            filter: blur(25px);
+            animation: explode 1.8s ease-out;
             z-index: 0;
         }
 
-        @keyframes lightPulse {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-            50% { opacity: 1; }
-            100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1.2); }
+        @keyframes explode {
+            0% { 
+                opacity: 0; 
+                transform: translate(-50%, -50%) scale(0.3); 
+            }
+            40% { 
+                opacity: 1; 
+            }
+            100% { 
+                opacity: 0.2; 
+                transform: translate(-50%, -50%) scale(1.5); 
+            }
         }
 
-        .message-opening {
+        .msg-opening {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -327,89 +347,84 @@
             text-align: center;
             z-index: 3;
             opacity: 0;
-            animation: fadeInMessage 0.8s ease 0.7s forwards;
+            animation: fadeMsg 1s ease 0.9s forwards;
         }
 
-        @keyframes fadeInMessage {
+        @keyframes fadeMsg {
             from { opacity: 0; }
             to { opacity: 1; }
         }
 
-        .message-opening p {
+        .msg-opening p {
             color: rgba(255, 255, 255, 0.95);
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.8;
             font-style: italic;
         }
 
-        .tap-continue {
-            font-size: 13px;
-            color: white;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
-            animation: pulse 2s infinite;
+        .finger-tap {
             position: absolute;
-            bottom: 30px;
+            bottom: 40px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
-            z-index: 5;
+            gap: 8px;
             cursor: pointer;
+            z-index: 5;
         }
 
         .finger-icon {
-            font-size: 22px;
-            animation: bounce 1.5s infinite;
+            font-size: 24px;
+            animation: bounce-finger 1.5s infinite;
         }
 
-        @keyframes bounce {
+        @keyframes bounce-finger {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
+            50% { transform: translateY(-15px); }
         }
 
-        /* SCREEN 3: FULL INVITATION */
-        .screen3-content {
-            background: linear-gradient(135deg, #0a1628 0%, #1a3a5a 50%, #0f1f3a 100%);
+        .finger-text {
+            font-size: 12px;
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+            animation: pulse-tap 2s infinite;
+        }
+
+        /* ===== SCREEN 3: INVITATION ===== */
+        .screen3 .screen-inner {
+            overflow-y: auto;
+            padding: 15px 0;
+            justify-content: flex-start;
+        }
+
+        .invitation-container {
             width: 100%;
-            height: 100%;
+            max-height: 100%;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            overflow-y: auto;
-            padding-top: 15px;
-            position: relative;
+            padding: 15px 0;
+            gap: 15px;
         }
 
         .invitation-card {
-            background: linear-gradient(135deg, rgba(10, 35, 80, 0.95) 0%, rgba(20, 50, 100, 0.95) 100%);
-            border-radius: 18px;
-            padding: 28px 18px;
-            width: 92%;
+            background: linear-gradient(135deg, rgba(10, 35, 80, 0.98) 0%, rgba(20, 50, 110, 0.98) 100%);
+            border-radius: 20px;
+            padding: 32px 24px;
+            width: 88%;
             max-width: 320px;
-            box-shadow: 0 0 50px rgba(173, 216, 230, 0.2), inset 0 0 20px rgba(173, 216, 230, 0.1);
-            border: 1.5px solid rgba(173, 216, 230, 0.4);
+            box-shadow: 0 0 60px rgba(173, 216, 230, 0.25), inset 0 0 30px rgba(173, 216, 230, 0.1);
+            border: 1.5px solid rgba(173, 216, 230, 0.5);
             position: relative;
-            margin-bottom: 15px;
             animation: slideUp 0.8s ease;
-            overflow: hidden;
-        }
-
-        .invitation-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(173, 216, 230, 0.1), transparent);
-            pointer-events: none;
+            text-align: center;
         }
 
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(40px);
             }
             to {
                 opacity: 1;
@@ -417,222 +432,222 @@
             }
         }
 
-        .floral-left {
+        .invitation-card::before {
+            content: '';
             position: absolute;
-            left: -15px;
-            top: 50%;
-            transform: translateY(-50%) scaleX(-1);
-            font-size: 80px;
-            opacity: 0.25;
-            z-index: 0;
-        }
-
-        .floral-right {
-            position: absolute;
-            right: -15px;
+            left: -40px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 80px;
-            opacity: 0.25;
+            font-size: 120px;
+            opacity: 0.15;
+            color: #add8e6;
             z-index: 0;
         }
 
-        .invitation-content {
+        .invitation-card::after {
+            content: '';
+            position: absolute;
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 120px;
+            opacity: 0.15;
+            color: #add8e6;
+            z-index: 0;
+        }
+
+        .inv-content {
             position: relative;
-            z-index: 1;
-            text-align: center;
+            z-index: 2;
         }
 
         .inv-title {
-            font-size: 40px;
+            font-size: 44px;
             color: #e6f3ff;
-            font-weight: normal;
+            font-weight: 300;
             letter-spacing: 3px;
-            text-shadow: 0 0 15px rgba(173, 216, 230, 0.5);
-            margin-bottom: 2px;
+            text-shadow: 0 0 15px rgba(173, 216, 230, 0.6);
+            margin-bottom: 3px;
             font-style: italic;
         }
 
         .inv-number {
-            font-size: 56px;
+            font-size: 58px;
             color: #c9e3ff;
-            text-shadow: 0 0 20px rgba(173, 216, 230, 0.6);
-            line-height: 0.8;
-            font-weight: normal;
+            text-shadow: 0 0 22px rgba(173, 216, 230, 0.7);
+            line-height: 0.85;
+            font-weight: 300;
         }
 
         .inv-subtitle {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.75);
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
             letter-spacing: 2px;
-            margin-top: 8px;
+            margin-top: 10px;
             text-transform: uppercase;
             font-weight: bold;
         }
 
         .divider {
-            width: 50px;
-            height: 0.5px;
-            background: rgba(173, 216, 230, 0.5);
-            margin: 12px auto;
-            position: relative;
-            z-index: 1;
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(173, 216, 230, 0.6), transparent);
+            margin: 15px auto;
         }
 
         .inv-message {
-            font-size: 13px;
+            font-size: 14px;
             color: rgba(255, 255, 255, 0.9);
-            line-height: 1.7;
-            margin: 12px 0;
+            line-height: 1.8;
+            margin: 15px 0;
             font-style: italic;
-            position: relative;
-            z-index: 1;
+        }
+
+        .inv-message-strong {
+            font-size: 13px;
+            font-style: normal;
         }
 
         .inv-details {
-            font-size: 11px;
+            font-size: 12px;
             color: rgba(255, 255, 255, 0.85);
-            line-height: 1.8;
-            margin: 12px 0;
-            position: relative;
-            z-index: 1;
+            line-height: 2;
+            margin-top: 15px;
+            text-align: center;
         }
 
-        .detail-item {
-            margin: 10px 0;
-        }
-
-        .detail-icon {
-            font-size: 13px;
-            margin-right: 5px;
+        .detail-line {
+            margin: 8px 0;
         }
 
         .detail-label {
             color: #e6f3ff;
-            font-weight: bold;
             font-style: italic;
+            font-weight: bold;
         }
 
-        /* SCREEN 4: QR AND RSVP */
-        .screen4-content {
-            background: linear-gradient(135deg, #0a1628 0%, #1a3a5a 50%, #0f1f3a 100%);
+        .detail-small {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* ===== SCREEN 4: QR AND RSVP ===== */
+        .screen4 .screen-inner {
+            overflow-y: auto;
+            padding: 15px 0;
+            justify-content: flex-start;
+        }
+
+        .qr-container {
             width: 100%;
-            height: 100%;
+            max-height: 100%;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            overflow-y: auto;
-            padding-top: 15px;
-            position: relative;
+            padding: 15px 0;
+            gap: 15px;
         }
 
         .qr-card {
-            background: linear-gradient(135deg, rgba(10, 35, 80, 0.95) 0%, rgba(20, 50, 100, 0.95) 100%);
-            border-radius: 18px;
-            padding: 22px 18px;
-            width: 92%;
+            background: linear-gradient(135deg, rgba(10, 35, 80, 0.98) 0%, rgba(20, 50, 110, 0.98) 100%);
+            border-radius: 20px;
+            padding: 28px 24px;
+            width: 88%;
             max-width: 320px;
-            box-shadow: 0 0 50px rgba(173, 216, 230, 0.2), inset 0 0 20px rgba(173, 216, 230, 0.1);
-            border: 1.5px solid rgba(173, 216, 230, 0.4);
+            box-shadow: 0 0 60px rgba(173, 216, 230, 0.25), inset 0 0 30px rgba(173, 216, 230, 0.1);
+            border: 1.5px solid rgba(173, 216, 230, 0.5);
             position: relative;
-            margin-bottom: 15px;
             animation: slideUp 0.8s ease;
-            overflow: hidden;
         }
 
         .qr-card::before {
-            content: '';
+            content: '🌿';
             position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(173, 216, 230, 0.1), transparent);
-            pointer-events: none;
-        }
-
-        .floral-qr-left {
-            position: absolute;
-            left: -15px;
+            left: -35px;
             top: 50%;
             transform: translateY(-50%) scaleX(-1);
-            font-size: 100px;
-            opacity: 0.2;
+            font-size: 140px;
+            opacity: 0.12;
             z-index: 0;
         }
 
-        .floral-qr-right {
+        .qr-card::after {
+            content: '🌿';
             position: absolute;
-            right: -15px;
+            right: -35px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 100px;
-            opacity: 0.2;
+            font-size: 140px;
+            opacity: 0.12;
             z-index: 0;
         }
 
         .qr-content {
             position: relative;
-            z-index: 1;
+            z-index: 2;
             text-align: center;
         }
 
-        .qr-title {
+        .qr-label {
             font-size: 13px;
             color: rgba(255, 255, 255, 0.8);
             letter-spacing: 2px;
             margin-bottom: 12px;
-            text-align: center;
         }
 
-        .qr-code-box {
+        .qr-box {
             background: white;
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 6px;
-            width: 130px;
-            height: 130px;
+            width: 140px;
+            height: 140px;
             margin: 0 auto 15px;
-            box-shadow: 0 0 20px rgba(173, 216, 230, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.3);
-            border: 2px solid rgba(173, 216, 230, 0.5);
+            box-shadow: 0 0 30px rgba(173, 216, 230, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(173, 216, 230, 0.6);
         }
 
-        .qr-code-box img {
+        .qr-box img {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
 
-        .dress-code-section {
+        .dress-section {
             text-align: center;
-            margin: 15px 0;
-            position: relative;
-            z-index: 1;
+            margin-top: 15px;
         }
 
-        .dress-code-title {
-            font-size: 12px;
+        .dress-title {
+            font-size: 13px;
             color: #e6f3ff;
             letter-spacing: 2px;
             margin-bottom: 8px;
             font-weight: bold;
         }
 
-        .dress-code-text {
+        .dress-subtitle {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .dress-text {
             font-size: 11px;
-            color: rgba(255, 255, 255, 0.85);
+            color: rgba(255, 255, 255, 0.8);
             line-height: 1.6;
             font-style: italic;
         }
 
-        .rsvp-button {
+        .rsvp-btn {
             width: 85%;
             max-width: 270px;
-            padding: 12px;
-            margin: 15px auto;
-            border: 2px solid rgba(173, 216, 230, 0.7);
+            padding: 13px;
+            margin: 18px auto;
+            border: 2px solid rgba(173, 216, 230, 0.8);
             border-radius: 50px;
-            background: rgba(173, 216, 230, 0.08);
+            background: rgba(173, 216, 230, 0.1);
             backdrop-filter: blur(10px);
             color: #e6f3ff;
             font-size: 13px;
@@ -644,128 +659,126 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 0 25px rgba(173, 216, 230, 0.2);
+            box-shadow: 0 0 30px rgba(173, 216, 230, 0.3);
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
 
-        .rsvp-button:hover {
-            background: rgba(173, 216, 230, 0.15);
-            box-shadow: 0 0 35px rgba(173, 216, 230, 0.35);
-            transform: scale(1.02);
+        .rsvp-btn:hover {
+            background: rgba(173, 216, 230, 0.2);
+            box-shadow: 0 0 40px rgba(173, 216, 230, 0.5);
+            transform: scale(1.03);
         }
 
-        .rsvp-button:active {
-            transform: scale(0.98);
+        .rsvp-btn:active {
+            transform: scale(0.97);
         }
 
-        .footer-message {
-            font-size: 10px;
+        .final-message {
+            font-size: 11px;
             color: rgba(255, 255, 255, 0.6);
             text-align: center;
-            margin: 12px 0 20px;
-            line-height: 1.5;
+            margin: 15px 0 20px;
+            line-height: 1.6;
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
 
-        .heart-line {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.4);
+        .heart-final {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.5);
             text-align: center;
             margin: 10px 0;
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
 
         /* SCROLLBAR */
-        .screen3-content::-webkit-scrollbar,
-        .screen4-content::-webkit-scrollbar {
-            width: 4px;
+        .invitation-container::-webkit-scrollbar,
+        .qr-container::-webkit-scrollbar {
+            width: 5px;
         }
 
-        .screen3-content::-webkit-scrollbar-track,
-        .screen4-content::-webkit-scrollbar-track {
+        .invitation-container::-webkit-scrollbar-track,
+        .qr-container::-webkit-scrollbar-track {
             background: rgba(173, 216, 230, 0.1);
         }
 
-        .screen3-content::-webkit-scrollbar-thumb,
-        .screen4-content::-webkit-scrollbar-thumb {
-            background: rgba(173, 216, 230, 0.3);
-            border-radius: 2px;
+        .invitation-container::-webkit-scrollbar-thumb,
+        .qr-container::-webkit-scrollbar-thumb {
+            background: rgba(173, 216, 230, 0.4);
+            border-radius: 3px;
         }
 
-        /* MOBILE RESPONSIVE */
+        /* MOBILE */
         @media (max-width: 600px) {
             .phone {
                 max-width: 95vw;
-                border-width: 8px;
+                border-width: 10px;
             }
 
-            .phone::before {
-                width: 130px;
-                height: 24px;
+            .screen {
+                width: 95vw;
+                max-width: 360px;
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="stars" id="starsContainer"></div>
-    <canvas id="fx"></canvas>
+    <!-- BACKGROUND EFFECTS -->
+    <div class="bg-effects">
+        <div class="stars" id="starsContainer"></div>
+        <div class="glitter-container" id="glitterContainer"></div>
+    </div>
 
+    <canvas id="fireworksCanvas"></canvas>
+
+    <!-- PHONE -->
     <div class="phone">
         <!-- SCREEN 1: CLOSED ENVELOPE -->
-        <div class="screen screen1 active">
-            <div class="screen-content">
-                <div class="screen1-content">
-                    <div class="glitter-bg" id="glitterBg"></div>
-                    
-                    <div class="envelope-closed" id="envelopeButton">
-                        <div class="envelope-content">
-                            <div class="envelope-title">Valentina</div>
-                            <div class="envelope-number">18<span style="font-size: 32px;">th</span></div>
-                            <div class="envelope-decoration-line">❦</div>
-                        </div>
-                        <div class="envelope-seal">18</div>
+        <div class="screen screen1 active" id="screen1">
+            <div class="screen-inner">
+                <div class="envelope-box" id="envelopeBtn">
+                    <div class="envelope-content">
+                        <div class="env-name">Valentina</div>
+                        <div class="env-number">18<span style="font-size: 36px;">th</span></div>
+                        <div class="env-decoration">❦</div>
                     </div>
-                    <div class="sei-invitato">SEI INVITATO</div>
-                    <div class="tap-instruction">✨ Tocca ✨</div>
+                    <div class="seal-badge">18</div>
                 </div>
+                <div class="text-sei">SEI INVITATO</div>
+                <div class="heart-bottom">💙</div>
+                <div class="tap-text">✨ Tocca ✨</div>
             </div>
         </div>
 
         <!-- SCREEN 2: OPENING ENVELOPE -->
-        <div class="screen screen2">
-            <div class="screen-content">
-                <div class="screen2-content">
-                    <div class="envelope-opening" id="envelopeOpening">
-                        <div class="light-burst"></div>
-                        <div class="envelope-back"></div>
-                        <div class="envelope-flap"></div>
-                        <div class="message-opening">
-                            <p>C'è un giorno speciale<br>che voglio condividere<br><em>con te...</em></p>
-                        </div>
+        <div class="screen screen2" id="screen2">
+            <div class="screen-inner">
+                <div class="envelope-opening">
+                    <div class="light-explosion"></div>
+                    <div class="envelope-base"></div>
+                    <div class="flap-open"></div>
+                    <div class="msg-opening">
+                        <p>C'è un giorno speciale<br>che voglio condividere<br><em>con te...</em></p>
                     </div>
-                    <div class="tap-continue" id="tapContinue">
-                        <div class="finger-icon">👆</div>
-                        <div>Tocca per continuare</div>
-                    </div>
+                </div>
+                <div class="finger-tap" id="fingerTap">
+                    <div class="finger-icon">👆</div>
+                    <div class="finger-text">Tocca per continuare</div>
                 </div>
             </div>
         </div>
 
-        <!-- SCREEN 3: FULL INVITATION -->
-        <div class="screen screen3">
-            <div class="screen-content">
-                <div class="screen3-content" id="screen3Scroll">
-                    <!-- INVITATION CARD 1 -->
+        <!-- SCREEN 3: INVITATION -->
+        <div class="screen screen3" id="screen3">
+            <div class="screen-inner">
+                <div class="invitation-container">
                     <div class="invitation-card">
-                        <div class="floral-left">🌿</div>
-                        <div class="floral-right">🌿</div>
-                        <div class="invitation-content">
+                        <div class="inv-content">
                             <div class="inv-title">Valentina</div>
-                            <div class="inv-number">18<span style="font-size: 40px;">th</span></div>
+                            <div class="inv-number">18<span style="font-size: 42px;">th</span></div>
                             <div class="inv-subtitle">BIRTHDAY PARTY</div>
                             
                             <div class="divider"></div>
@@ -775,7 +788,7 @@
                                 vanno festeggiati in grande.
                             </div>
                             
-                            <div class="inv-message" style="font-size: 12px; font-style: normal;">
+                            <div class="inv-message inv-message-strong">
                                 Sarai felice di averti al mio<br>
                                 <span class="detail-label">diciotttesimo compleanno!</span>
                             </div>
@@ -783,53 +796,54 @@
                             <div class="divider"></div>
 
                             <div class="inv-details">
-                                <div class="detail-item">
-                                    <span class="detail-icon">📅</span>
-                                    <span class="detail-label">Data:</span> Venerdì, 17 Luglio 2026
+                                <div class="detail-line">
+                                    <span class="detail-label">📅 Data:</span> Venerdì, 17 Luglio 2026
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-icon">🕐</span>
-                                    <span class="detail-label">Orario:</span> dalle ore 20:30
+                                <div class="detail-line">
+                                    <span class="detail-label">🕐 Orario:</span> dalle ore 20:30
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-icon">📍</span>
-                                    <span class="detail-label">Location:</span> Villa Andrea – Frignano<br>
-                                    <small style="color: rgba(255, 255, 255, 0.6); margin-left: 18px;">(Inquadra il QR Code qui sotto<br>per le indicazioni stradali)</small>
+                                <div class="detail-line">
+                                    <span class="detail-label">📍 Location:</span> Villa Andrea – Frignano<br>
+                                    <span class="detail-small">(Inquadra il QR Code qui sotto<br>per le indicazioni stradali)</span>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
 
-                    <!-- QR AND RSVP CARD -->
+        <!-- SCREEN 4: QR AND RSVP -->
+        <div class="screen screen4" id="screen4">
+            <div class="screen-inner">
+                <div class="qr-container">
                     <div class="qr-card">
-                        <div class="floral-qr-left">🌿</div>
-                        <div class="floral-qr-right">🌿</div>
                         <div class="qr-content">
-                            <div class="qr-title">📍 LOCATION</div>
+                            <div class="qr-label">📍 LOCATION</div>
                             
-                            <div class="qr-code-box">
+                            <div class="qr-box">
                                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https%3A%2F%2Fwww.google.com%2Furl%3Fsa%3Dt%26source%3Dweb%26rct%3Dj%26opi%3D89978449%26url%3D%2Fmaps%2Fdir%2F41.0409782%2C14.3061406%2Fvilla%252Bandrea%2Fdata%253D%214m2%214m1%213e0%253Fsa%253DX%2526ved%253D1t%3A196274%2526ictx%253D111%26ved%3D2ahUKEwjanfbIh9iUAxV3Zv4FHa-zKJMQsv0LegQIHRAH%26usg%3DAOvVaw2oG3RhvLoLC8KkQTIXN8bY" alt="QR Code">
                             </div>
 
                             <div class="divider"></div>
 
-                            <div class="dress-code-section">
-                                <div class="dress-code-title">✨ DRESS CODE ✨</div>
-                                <div class="dress-code-text">
-                                    <strong>Formal Elegant</strong><br><br>
+                            <div class="dress-section">
+                                <div class="dress-title">✨ DRESS CODE ✨</div>
+                                <div class="dress-subtitle">Formal Elegant</div>
+                                <div class="dress-text">
                                     Un dettaglio blu o argentato<br>
                                     nel tuo outfit sarà perfetto<br>
                                     per brillare insieme a me.
                                 </div>
                             </div>
 
-                            <button class="rsvp-button" id="rsvpBtn">
+                            <button class="rsvp-btn" id="rsvpBtn">
                                 💬 CONFERMA PRESENZA
                             </button>
 
-                            <div class="heart-line">💙 ✨ 💙</div>
+                            <div class="heart-final">💙 ✨ 💙</div>
 
-                            <div class="footer-message">
+                            <div class="final-message">
                                 È gradita gentile conferma<br>
                                 entro il 30 Giugno 2026.
                             </div>
@@ -844,12 +858,12 @@
         // GENERATE STARS
         function generateStars() {
             const container = document.getElementById('starsContainer');
-            const starCount = 80;
+            const count = 100;
             
-            for (let i = 0; i < starCount; i++) {
+            for (let i = 0; i < count; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
-                star.style.width = Math.random() * 2 + 1 + 'px';
+                star.style.width = Math.random() * 2 + 0.5 + 'px';
                 star.style.height = star.style.width;
                 star.style.left = Math.random() * 100 + '%';
                 star.style.top = Math.random() * 100 + '%';
@@ -860,17 +874,17 @@
 
         // GENERATE GLITTER
         function generateGlitter() {
-            const container = document.getElementById('glitterBg');
-            const glitterCount = 20;
+            const container = document.getElementById('glitterContainer');
+            const count = 50;
             
-            for (let i = 0; i < glitterCount; i++) {
+            for (let i = 0; i < count; i++) {
                 const glitter = document.createElement('div');
                 glitter.className = 'glitter';
-                glitter.style.width = Math.random() * 4 + 2 + 'px';
-                glitter.style.height = glitter.style.width;
                 glitter.style.left = Math.random() * 100 + '%';
                 glitter.style.top = Math.random() * 100 + '%';
-                glitter.style.animationDelay = Math.random() * 6 + 's';
+                glitter.style.setProperty('--tx', (Math.random() - 0.5) * 100 + 'px');
+                glitter.style.setProperty('--ty', (Math.random() - 0.5) * 100 + 'px');
+                glitter.style.animationDelay = Math.random() * 2 + 's';
                 container.appendChild(glitter);
             }
         }
@@ -878,8 +892,8 @@
         generateStars();
         generateGlitter();
 
-        // CANVAS SETUP
-        const canvas = document.getElementById('fx');
+        // FIREWORKS CANVAS
+        const canvas = document.getElementById('fireworksCanvas');
         const ctx = canvas.getContext('2d');
 
         function resizeCanvas() {
@@ -892,30 +906,29 @@
 
         let particles = [];
 
-        // FIREWORKS FUNCTION
-        function firework(x, y) {
-            const colors = ['#e6f3ff', '#add8e6', '#87ceeb', '#ffffff', '#b0d8e8'];
+        function createFirework(x, y) {
+            const colors = ['#e6f3ff', '#add8e6', '#87ceeb', '#ffffff', '#ffd700', '#ffb300'];
             
-            for (let i = 0; i < 100; i++) {
+            for (let i = 0; i < 120; i++) {
                 particles.push({
                     x: x,
                     y: y,
-                    dx: (Math.random() - 0.5) * 12,
-                    dy: (Math.random() - 0.5) * 12,
+                    dx: (Math.random() - 0.5) * 14,
+                    dy: (Math.random() - 0.5) * 14,
                     life: 100,
-                    size: Math.random() * 2.5 + 1,
+                    size: Math.random() * 3 + 1,
                     color: colors[Math.floor(Math.random() * colors.length)]
                 });
             }
         }
 
-        function animate() {
+        function animateFireworks() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             particles.forEach((p, index) => {
                 p.x += p.dx;
                 p.y += p.dy;
-                p.dy += 0.1;
+                p.dy += 0.15;
                 p.life--;
 
                 ctx.beginPath();
@@ -925,7 +938,8 @@
                 if (p.color === '#e6f3ff') rgb = '230, 243, 255';
                 else if (p.color === '#add8e6') rgb = '173, 216, 230';
                 else if (p.color === '#87ceeb') rgb = '135, 206, 235';
-                else if (p.color === '#b0d8e8') rgb = '176, 216, 232';
+                else if (p.color === '#ffd700') rgb = '255, 215, 0';
+                else if (p.color === '#ffb300') rgb = '255, 179, 0';
                 
                 ctx.fillStyle = `rgba(${rgb}, ${p.life / 100})`;
                 ctx.fill();
@@ -935,64 +949,58 @@
                 }
             });
 
-            requestAnimationFrame(animate);
+            requestAnimationFrame(animateFireworks);
         }
 
-        animate();
+        animateFireworks();
 
-        // SCREEN MANAGEMENT
-        let currentScreen = 1;
+        // SCREEN NAVIGATION
         const screens = {
-            1: document.querySelector('.screen1'),
-            2: document.querySelector('.screen2'),
-            3: document.querySelector('.screen3')
+            1: document.getElementById('screen1'),
+            2: document.getElementById('screen2'),
+            3: document.getElementById('screen3'),
+            4: document.getElementById('screen4')
         };
 
-        function goToScreen(screenNum) {
-            if (currentScreen === screenNum) return;
+        let currentScreen = 1;
 
+        function goToScreen(num) {
+            if (currentScreen === num) return;
+            
             screens[currentScreen].classList.remove('active');
-            screens[screenNum].classList.add('active');
-            currentScreen = screenNum;
+            screens[num].classList.add('active');
+            currentScreen = num;
         }
 
-        // SCREEN 1: OPEN ENVELOPE
-        document.getElementById('envelopeButton').addEventListener('click', function() {
+        // EVENTS
+        document.getElementById('envelopeBtn').addEventListener('click', () => {
             goToScreen(2);
         });
 
-        // SCREEN 2: CONTINUE TO INVITATION
-        document.getElementById('tapContinue').addEventListener('click', function() {
+        document.getElementById('fingerTap').addEventListener('click', () => {
             goToScreen(3);
             
-            setTimeout(() => {
-                firework(window.innerWidth / 2, window.innerHeight / 2);
-            }, 100);
-
-            setTimeout(() => {
-                firework(window.innerWidth / 4, window.innerHeight / 3);
-            }, 300);
-
-            setTimeout(() => {
-                firework((window.innerWidth * 3) / 4, window.innerHeight / 3);
-            }, 600);
+            setTimeout(() => createFirework(window.innerWidth / 2, window.innerHeight / 2), 100);
+            setTimeout(() => createFirework(window.innerWidth / 4, window.innerHeight / 3), 300);
+            setTimeout(() => createFirework((window.innerWidth * 3) / 4, window.innerHeight / 3), 600);
         });
 
-        // RSVP FUNCTION
-        document.getElementById('rsvpBtn').addEventListener('click', function() {
+        // SCROLL TO NEXT SCREEN
+        document.querySelector('.invitation-container').addEventListener('scroll', function() {
+            if (this.scrollTop + this.clientHeight >= this.scrollHeight - 100) {
+                setTimeout(() => goToScreen(4), 300);
+            }
+        });
+
+        // RSVP BUTTON
+        document.getElementById('rsvpBtn').addEventListener('click', () => {
             let people = prompt("Quante persone saranno presenti?");
 
             if (!people || people === "") return;
 
-            let msg =
-                "Ciao Vale 💙\n" +
-                "Confermo la mia presenza al tuo 18° compleanno ✨\n\n" +
-                "Numero persone: " + people;
+            let msg = "Ciao Vale 💙\nConfermo la mia presenza al tuo 18° compleanno ✨\n\nNumero persone: " + people;
 
-            let url =
-                "https://wa.me/393755154898?text=" +
-                encodeURIComponent(msg);
-
+            let url = "https://wa.me/393755154898?text=" + encodeURIComponent(msg);
             window.open(url, "_blank");
         });
     </script>
