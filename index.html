@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Valentina 18° Compleanno</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            overflow-x: hidden;
+            font-family: 'Times New Roman', serif;
+            background: #0a1628;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 50%, #0f1f3a 100%);
+            position: relative;
+        }
+
+        /* STARS */
+        .stars {
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(white 1px, transparent 1px),
+                radial-gradient(white 1px, transparent 1px);
+            background-size: 80px 80px, 120px 120px;
+            background-position: 0 0, 40px 60px;
+            opacity: 0.4;
+            animation: twinkle 6s infinite alternate;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes twinkle {
+            from { opacity: 0.2; }
+            to { opacity: 0.5; }
+        }
+
+        /* CANVAS FIREWORKS */
+        canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* HOME SCREEN */
+        .home {
+            position: absolute;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* ENVELOPE */
+        .envelope {
+            position: relative;
+            width: 340px;
+            height: 230px;
+            cursor: pointer;
+            filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.2));
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            perspective: 1000px;
+        }
+
+        /* ENVELOPE BACK */
+        .env-back {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(145deg, #1a3a7a, #0a1a3a);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.12);
+            border: 2px solid rgba(173, 216, 230, 0.3);
+        }
+
+        .env-back::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.9) 1px, transparent 1px);
+            background-size: 18px 18px;
+            opacity: 0.1;
+        }
+
+        /* FLAP */
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(0 0, 100% 0, 50% 60%);
+            background: linear-gradient(145deg, #2456bf, #08162f);
+            transform-origin: top center;
+            transition: transform 1.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-radius: 18px;
+            z-index: 4;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+        }
+
+        /* LIGHT EFFECT */
+        .light {
+            position: absolute;
+            left: 50%;
+            top: 48%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.95), transparent 70%);
+            filter: blur(10px);
+            opacity: 0;
+            transition: opacity 1s ease;
+            z-index: 1;
+        }
+
+        /* SEAL */
+        .seal {
+            position: absolute;
+            left: 50%;
+            top: 55%;
+            transform: translate(-50%, -50%);
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #2a5fd1, #09142c);
+            border: 4px solid rgba(173, 216, 230, 0.6);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+            z-index: 8;
+        }
+
+        .seal::after {
+            content: '💙';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        /* TAP TEXT */
+        .tap {
+            margin-top: 35px;
+            font-size: 22px;
+            letter-spacing: 3px;
+            color: white;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* INVITE SCREEN */
+        .invite-screen {
+            position: fixed;
+            inset: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(8px);
+            overflow-y: auto;
+        }
+
+        .invite-screen.active {
+            display: flex;
+        }
+
+        /* INVITE CONTAINER */
+        .invite-wrap {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            animation: showInvite 1.2s ease;
+        }
+
+        @keyframes showInvite {
+            from {
+                opacity: 0;
+                transform: translateY(80px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* INVITE CARD */
+        .invite-card {
+            background: linear-gradient(135deg, rgba(15, 35, 70, 0.95) 0%, rgba(25, 50, 100, 0.95) 100%);
+            border-radius: 28px;
+            padding: 40px 30px;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(173, 216, 230, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .invite-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(173, 216, 230, 0.1), transparent);
+            pointer-events: none;
+        }
+
+        /* TITLE */
+        .invite-card h1 {
+            text-align: center;
+            font-size: 48px;
+            color: #e6f3ff;
+            font-weight: normal;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px rgba(173, 216, 230, 0.4);
+        }
+
+        .invite-card .number {
+            text-align: center;
+            font-size: 56px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(173, 216, 230, 0.5);
+        }
+
+        .invite-card .subtitle {
+            text-align: center;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 3px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(173, 216, 230, 0.3);
+        }
+
+        /* DECORATIVE LINE */
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: rgba(173, 216, 230, 0.5);
+            margin: 20px auto;
+        }
+
+        /* MESSAGE */
+        .message {
+            text-align: center;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+            margin: 25px 0;
+            font-style: italic;
+        }
+
+        /* DETAILS */
+        .details {
+            margin: 30px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .detail-icon {
+            font-size: 24px;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .detail-text {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .detail-text strong {
+            color: #e6f3ff;
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        /* QR CODE SECTION */
+        .qr-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(173, 216, 230, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(173, 216, 230, 0.2);
+            text-align: center;
+        }
+
+        .qr-section h3 {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            background: white;
+            border-radius: 10px;
+            padding: 8px;
+            margin: 0 auto;
+            box-shadow: 0 0 15px rgba(173, 216, 230, 0.3);
+        }
+
+        /* DRESS CODE */
+        .dress-code {
+            margin: 25px 0;
+            padding: 20px;
+            background: rgba(173, 216, 230, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(173, 216, 230, 0.2);
+            text-align: center;
+        }
+
+        .dress-code h3 {
+            font-size: 16px;
+            color: #e6f3ff;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .dress-code p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        /* RSVP BUTTON */
+        .rsvp-btn {
+            width: 100%;
+            padding: 16px;
+            margin-top: 25px;
+            border: 2px solid rgba(173, 216, 230, 0.6);
+            border-radius: 50px;
+            background: rgba(173, 216, 230, 0.1);
+            backdrop-filter: blur(14px);
+            color: #e6f3ff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .rsvp-btn:hover {
+            background: rgba(173, 216, 230, 0.2);
+            box-shadow: 0 0 20px rgba(173, 216, 230, 0.4);
+            transform: scale(1.02);
+        }
+
+        .rsvp-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* FOOTER MESSAGE */
+        .footer-message {
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+
+        .heart-divider {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.4);
+            margin: 15px 0;
+        }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .envelope {
+                width: 290px;
+                height: 200px;
+            }
+
+            .tap {
+                font-size: 18px;
+            }
+
+            .invite-wrap {
+                max-width: 100%;
+            }
+
+            .invite-card {
+                padding: 30px 20px;
+            }
+
+            .invite-card h1 {
+                font-size: 36px;
+            }
+
+            .invite-card .number {
+                font-size: 44px;
+            }
+
+            .message {
+                font-size: 16px;
+            }
+
+            .detail-text {
+                font-size: 13px;
+            }
+
+            .qr-code {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars"></div>
+    <canvas id="fx"></canvas>
+
+    <!-- HOME SCREEN -->
+    <div class="home" id="home">
+        <div class="envelope" id="envelope">
+            <div class="env-back"></div>
+            <div class="light" id="light"></div>
+            <div class="flap" id="flap"></div>
+            <div class="seal"></div>
+        </div>
+        <div class="tap">✨ Tocca la busta ✨</div>
+    </div>
+
+    <!-- INVITE SCREEN -->
+    <div class="invite-screen" id="inviteScreen">
+        <div class="invite-wrap">
+            <div class="invite-card">
+                <div class="number">Valentina</div>
+                <h1>18<span style="font-size: 36px;">th</span></h1>
+                <div class="subtitle">BIRTHDAY PARTY</div>
+
+                <div class="divider"></div>
+
+                <div class="message">
+                    Il tempo vola, ma i momenti migliori<br>
+                    vanno festeggiati in grande.
+                </div>
+
+                <div class="message" style="font-size: 16px; font-style: normal;">
+                    Sarai felice di averti al mio<br>
+                    <strong style="font-style: italic;">diciotttesimo compleanno!</strong>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="details">
+                    <div class="detail-item">
+                        <div class="detail-icon">📅</div>
+                        <div class="detail-text">
+                            <strong>Data:</strong> Venerdì, 17 Luglio 2026
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon">🕐</div>
+                        <div class="detail-text">
+                            <strong>Orario:</strong> dalle ore 20:30
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon">📍</div>
+                        <div class="detail-text">
+                            <strong>Location:</strong> Villa Andrea – Frignano<br>
+                            <small style="color: rgba(255, 255, 255, 0.6);">(Inquadra il QR Code qui sotto<br>per le indicazioni stradali)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- QR CODE SECTION -->
+                <div class="qr-section">
+                    <h3>📍 LOCATION</h3>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https%3A%2F%2Fwww.google.com%2Furl%3Fsa%3Dt%26source%3Dweb%26rct%3Dj%26opi%3D89978449%26url%3D%2Fmaps%2Fdir%2F41.0409782%2C14.3061406%2Fvilla%252Bandrea%2Fdata%253D%214m2%214m1%213e0%253Fsa%253DX%2526ved%253D1t%3A196274%2526ictx%253D111%26ved%3D2ahUKEwjanfbIh9iUAxV3Zv4FHa-zKJMQsv0LegQIHRAH%26usg%3DAOvVaw2oG3RhvLoLC8KkQTIXN8bY" alt="QR Code Location" class="qr-code">
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- DRESS CODE -->
+                <div class="dress-code">
+                    <h3>✨ DRESS CODE</h3>
+                    <p>Formal Elegant</p>
+                    <small style="color: rgba(255, 255, 255, 0.6);">Un dettaglio blu o argentato<br>nel tuo outfit sarà perfetto<br>per brillare insieme a me.</small>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- RSVP BUTTON -->
+                <button class="rsvp-btn" id="rsvpBtn">
+                    💬 CONFERMA PRESENZA
+                </button>
+
+                <div class="heart-divider">💙 ✨ 💙</div>
+
+                <div class="footer-message">
+                    È gradita gentile conferma<br>
+                    entro il 30 Giugno 2026.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CANVAS SETUP
+        const canvas = document.getElementById('fx');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        let particles = [];
+
+        // FIREWORKS FUNCTION
+        function firework(x, y) {
+            const colors = ['#e6f3ff', '#add8e6', '#87ceeb', '#ffffff'];
+            
+            for (let i = 0; i < 140; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    dx: (Math.random() - 0.5) * 10,
+                    dy: (Math.random() - 0.5) * 10,
+                    life: 100,
+                    size: Math.random() * 3 + 1,
+                    color: colors[Math.floor(Math.random() * colors.length)]
+                });
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach((p, index) => {
+                p.x += p.dx;
+                p.y += p.dy;
+                p.life--;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                
+                const rgb = p.color === '#e6f3ff' ? '230, 243, 255' :
+                           p.color === '#add8e6' ? '173, 216, 230' :
+                           p.color === '#87ceeb' ? '135, 206, 235' :
+                           '255, 255, 255';
+                
+                ctx.fillStyle = `rgba(${rgb}, ${p.life / 100})`;
+                ctx.fill();
+
+                if (p.life <= 0) {
+                    particles.splice(index, 1);
+                }
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // ENVELOPE INTERACTION
+        let opened = false;
+
+        function openInvite() {
+            if (opened) return;
+
+            opened = true;
+
+            document.getElementById('flap').style.transform = 'rotateX(180deg)';
+            document.getElementById('light').style.opacity = '1';
+
+            setTimeout(function() {
+                document.getElementById('home').style.opacity = '0';
+
+                setTimeout(function() {
+                    document.getElementById('home').style.display = 'none';
+                    document.getElementById('inviteScreen').classList.add('active');
+
+                    // FIREWORKS
+                    firework(window.innerWidth / 2, window.innerHeight / 2);
+
+                    setTimeout(function() {
+                        firework(window.innerWidth / 4, window.innerHeight / 3);
+                    }, 300);
+
+                    setTimeout(function() {
+                        firework((window.innerWidth * 3) / 4, window.innerHeight / 3);
+                    }, 600);
+                }, 700);
+            }, 1000);
+        }
+
+        function rsvp() {
+            let people = prompt("Quante persone saranno presenti?");
+
+            if (!people || people === "") return;
+
+            let msg =
+                "Ciao Vale 💙\n" +
+                "Confermo la mia presenza al tuo 18° compleanno ✨\n\n" +
+                "Numero persone: " + people;
+
+            let url =
+                "https://wa.me/393755154898?text=" +
+                encodeURIComponent(msg);
+
+            window.open(url, "_blank");
+        }
+
+        // EVENT LISTENERS
+        const envelope = document.getElementById('envelope');
+
+        envelope.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            openInvite();
+        }, { passive: false });
+
+        envelope.addEventListener('click', function() {
+            openInvite();
+        });
+
+        document.getElementById('rsvpBtn').addEventListener('click', rsvp);
+    </script>
+
+</body>
+</html>
